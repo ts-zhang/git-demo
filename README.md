@@ -1,5 +1,6 @@
 # git操作教程
 
+![git 结构图](img/git.png "git结构图")
 
 
 ## 版本跳转 - [git reset命令](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E9%87%8D%E7%BD%AE%E6%8F%AD%E5%AF%86)
@@ -23,3 +24,4 @@ git reset参数
 --mixed 本地库移动HEAD指针，重置暂存区
 --hard  本地库移动HEAD指针，重置暂存区，重置工作区
 ```
+
