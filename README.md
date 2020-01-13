@@ -47,6 +47,13 @@ git reset参数
 --hard  本地库移动HEAD指针，重置暂存区，重置工作区
 ```
 
+## 差异对比
+```
+git diff <file>                     工作区和暂存区对比
+git diff <本地库历史版本> <file>     工作区和本地库对比
+git diff                            工作区和暂存区对比(所有文件)
+```
+
 ## GitWeb 简易网页查看器
 
 通过```git instaweb```命令启动web服务
