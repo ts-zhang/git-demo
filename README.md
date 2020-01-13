@@ -56,3 +56,13 @@ git push [remote-name] [branch-name] 推送到某个仓库的某个分支
 
 客户端使用```git clone git://localhost/repo1.git```检出仓库
 
+## git api
+
+编程方式使用git [libgit2](https://libgit2.org/) [jgit](https://www.eclipse.org/jgit/)
+
+- [c](https://github.com/libgit2/libgit2)
+- [c#](https://github.com/libgit2/libgit2sharp)
+- [java](https://www.eclipse.org/jgit/)
+- [python](https://github.com/libgit2/pygit2)
+- [go](https://github.com/libgit2/git2go)
+
