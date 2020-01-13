@@ -2,6 +2,28 @@
 
 ![git 结构图](img/git.png "git结构图")
 
+## 基本命令
+
+```
+git init　初始化仓库
+git init --bare 初始化裸仓库
+git add <file> 将工作区文件添加到暂存区
+git commit -m <message> 暂存区提交到本地库
+git status 查看当前状态
+git rm --cached 从暂存区移出
+git mv README.md README 移动文件
+git log --pretty=oneline 日志
+git checkout -- <file>　撤销文件修改
+git push [remote-name] [branch-name] 推送到某个仓库的某个分支
+```
+
+## 日志查看
+```
+git log 查看日志
+git log --pretty=oneline    显示为一行
+git log --oneline           显示为一行(hash值显示一部分)
+git reflog                  显示HEAD位置
+```
 
 ## 版本跳转 - [git reset命令](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E9%87%8D%E7%BD%AE%E6%8F%AD%E5%AF%86)
 
@@ -25,17 +47,6 @@ git reset参数
 --hard  本地库移动HEAD指针，重置暂存区，重置工作区
 ```
 
-```
-git init　初始化仓库
-git add <file>　添加到暂存区
-git commit -m <message> 提交到本地库
-git status 查看当前状态
-git rm --cached 从暂存区移出
-git mv README.md README 移动文件
-git log --pretty=oneline 日志
-git checkout -- <file>　撤销文件修改
-git push [remote-name] [branch-name] 推送到某个仓库的某个分支
-```
 ## GitWeb 简易网页查看器
 
 通过```git instaweb```命令启动web服务
