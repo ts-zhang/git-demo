@@ -74,3 +74,10 @@ git push [remote-name] [branch-name] 推送到某个仓库的某个分支
 - [javascript](https://github.com/octokit/octokit.js)
 - [python](https://github.com/PyGithub/PyGithub)
 - [go](https://github.com/google/go-github)
+
+
+## 缓存密码
+
+参考[凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8#r_credential_caching)
+
+```git config --global credential.helper cache```
