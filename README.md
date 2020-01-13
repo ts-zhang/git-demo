@@ -66,3 +66,11 @@ git push [remote-name] [branch-name] 推送到某个仓库的某个分支
 - [python](https://github.com/libgit2/pygit2)
 - [go](https://github.com/libgit2/git2go)
 
+## github api
+
+[github develop api](https://developer.github.com/v3/libraries/)
+
+- [c#](https://github.com/octokit/octokit.net)
+- [javascript](https://github.com/octokit/octokit.js)
+- [python](https://github.com/PyGithub/PyGithub)
+- [go](https://github.com/google/go-github)
