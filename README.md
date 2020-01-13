@@ -54,6 +54,16 @@ git diff <本地库历史版本> <file>     工作区和本地库对比
 git diff                            工作区和暂存区对比(所有文件)
 ```
 
+## 分支操作
+```
+git branch -v                                       查看当前分支
+git branch <branch name>                            创建分支
+git checkout <branch name>                          切换分支
+git merge <branch name>                             分支合并
+git fetch <远程库别名> <远程库分支名>                 拉取远程库内容(不合并到本地库)
+git pull                                            拉取(fetch + merge <远程库别名/远程分支名>)
+```
+
 ## GitWeb 简易网页查看器
 
 通过```git instaweb```命令启动web服务
