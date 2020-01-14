@@ -160,3 +160,17 @@ git grep --heading <str>搜索str字符串(文件名显示在上方)
 ```
 info/  pack/
 ```
+
+
+## 子模块 submodule
+
+git仓库添加子模块
+```
+git submodule add https://github.com/ts-zhang/git-module.git
+git submodule status                        查看子模块状态
+git submodule foreach <git command>         所有子模块中执行命令
+git clone --recurse-submodules              克隆带子模块的仓库
+git submodule update --init --recursive     初始化带子模块仓库(git clone后)
+```
+
+> 在主仓库中pull拉取代码，不能拉取submodule中的修改，需要执行 ```git submodule foreach git pull```
