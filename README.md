@@ -27,6 +27,15 @@ git reflog                  显示HEAD位置
 
 ## 版本跳转 - [git reset命令](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E9%87%8D%E7%BD%AE%E6%8F%AD%E5%AF%86)
 
+```git reset --soft```
+![reset soft](img/reset-soft.png "reset soft")
+
+```git reset --mixed```
+![reset mixed](img/reset-mixed.png "reset mixed")
+
+```git reset --hard```
+![reset hard](img/reset-hard.png "reset hard")
+
 基于索引值跳转
 ```
 git reset --hard [索引值]
