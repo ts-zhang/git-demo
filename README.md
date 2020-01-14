@@ -64,6 +64,17 @@ git fetch <远程库别名> <远程库分支名>                 拉取远程库
 git pull                                            拉取(fetch + merge <远程库别名/远程分支名>)
 ```
 
+## git搜索
+
+```
+git grep <str>          搜索str字符串
+git grep -n <str>       搜索str字符串(显示行号)
+git grep --count <str>  搜索str字符串(显示每个文件匹配数)
+git grep -p <str> *.c   搜索str字符串(显示函数)
+git grep --break <str>  搜索str字符串(两个文件中显示空行)
+git grep --heading <str>搜索str字符串(文件名显示在上方)
+```
+
 ## GitWeb 简易网页查看器
 
 通过```git instaweb```命令启动web服务
