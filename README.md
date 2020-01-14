@@ -73,6 +73,22 @@ git fetch <远程库别名> <远程库分支名>                 拉取远程库
 git pull                                            拉取(fetch + merge <远程库别名/远程分支名>)
 ```
 
+## 保存现场
+
+暂存区没有commit时，无法checkout到另一个分支，这时需要将当前工作stash后再切换。
+
+stash list使用栈数结构，先入后出
+
+```
+git stash               保存现场
+git stash list          查看保存的记录
+
+git stash pop           还原最新保存记录并从stash list中删除
+
+git stash apply         还原最新保存记录，不从stash list中删除
+git stash drop          删除最新保存记录
+```
+
 ## git搜索
 
 ```
