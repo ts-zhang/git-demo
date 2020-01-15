@@ -213,3 +213,12 @@ git clone repo.bundle repo                      解包为repo仓库
 
 删除标签```git tag -d <tagname>```
 
+## 子模块 subtree
+
+git仓库添加子模块
+
+```
+git remote add subtree https://github.com/ts-zhang/git-module.git   添加远程仓库
+git subtree add -P subtree subtree master                           添加子模块
+git subtree add -P subtree subtree master --squash                  添加子模块(子模块的多次提交合并)
+```
