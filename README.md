@@ -222,3 +222,5 @@ git remote add subtree https://github.com/ts-zhang/git-module.git   添加远程
 git subtree add -P subtree subtree master                           添加子模块
 git subtree add -P subtree subtree master --squash                  添加子模块(子模块的多次提交合并)
 ```
+
+>submodule和subtree区别 submodule为连接，subtree为拷贝
