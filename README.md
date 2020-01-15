@@ -193,3 +193,12 @@ git submodule update --init --recursive     初始化带子模块仓库(git clon
 323ddd3d (zts 2020-01-13 19:46:02 +0800 19) 
 323ddd3d (zts 2020-01-13 19:46:02 +0800 20) ## 日志查看
 ```
+
+## 打包
+
+>git仓库打包可以用来离线传输
+
+```
+git bundle create repo.bundle HEAD master       打包master分支
+git clone repo.bundle repo                      解包为repo仓库
+```
