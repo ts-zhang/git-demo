@@ -202,3 +202,14 @@ git submodule update --init --recursive     初始化带子模块仓库(git clon
 git bundle create repo.bundle HEAD master       打包master分支
 git clone repo.bundle repo                      解包为repo仓库
 ```
+
+## 标签
+
+轻标签  ```git tag <tagname>```
+
+注解标签```git tag -a <tagname>```
+
+查看标签```git tag -n```
+
+删除标签```git tag -d <tagname>```
+
