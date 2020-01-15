@@ -174,3 +174,22 @@ git submodule update --init --recursive     初始化带子模块仓库(git clon
 ```
 
 > 在主仓库中pull拉取代码，不能拉取submodule中的修改，需要执行 ```git submodule foreach git pull```
+
+## 文件标注
+
+>显示文件每一行的最后修改时间```git blame -L 10,20 README.md```
+
+显示结果如下
+```
+323ddd3d (zts 2020-01-13 19:46:02 +0800 10) git add <file> 将工作区文件添加到暂存区
+323ddd3d (zts 2020-01-13 19:46:02 +0800 11) git commit -m <message> 暂存区提交到本地库
+323ddd3d (zts 2020-01-13 19:46:02 +0800 12) git status 查看当前状态
+323ddd3d (zts 2020-01-13 19:46:02 +0800 13) git rm --cached 从暂存区移出
+323ddd3d (zts 2020-01-13 19:46:02 +0800 14) git mv README.md README 移动文件
+323ddd3d (zts 2020-01-13 19:46:02 +0800 15) git log --pretty=oneline 日志
+323ddd3d (zts 2020-01-13 19:46:02 +0800 16) git checkout -- <file>　撤销文件修改
+323ddd3d (zts 2020-01-13 19:46:02 +0800 17) git push [remote-name] [branch-name] 推送到某个仓库的某个分支
+323ddd3d (zts 2020-01-13 19:46:02 +0800 18) ```
+323ddd3d (zts 2020-01-13 19:46:02 +0800 19) 
+323ddd3d (zts 2020-01-13 19:46:02 +0800 20) ## 日志查看
+```
