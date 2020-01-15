@@ -73,6 +73,22 @@ git fetch <远程库别名> <远程库分支名>                 拉取远程库
 git pull                                            拉取(fetch + merge <远程库别名/远程分支名>)
 ```
 
+## 保存现场
+
+暂存区没有commit时，无法checkout到另一个分支，这时需要将当前工作stash后再切换。
+
+stash list使用栈数结构，先入后出
+
+```
+git stash               保存现场
+git stash list          查看保存的记录
+
+git stash pop           还原最新保存记录并从stash list中删除
+
+git stash apply         还原最新保存记录，不从stash list中删除
+git stash drop          删除最新保存记录
+```
+
 ## git搜索
 
 ```
@@ -129,3 +145,32 @@ git grep --heading <str>搜索str字符串(文件名显示在上方)
 参考[凭证存储](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8#r_credential_caching)
 
 ```git config --global credential.helper cache```
+
+## git gc
+
+```git gc```命令来优化本地库文件修订版
+
+执行前 .git/objects目录下显示如下,00/  15/  2d/这样的目录为每次提交的sha1值
+```
+00/  15/  2d/  37/  48/  57/  62/  76/  85/  9a/  b3/  b8/  c8/  da/  info/
+02/  1d/  31/  3a/  4f/  5c/  70/  82/  87/  a9/  b4/  bf/  cd/  ea/  pack/
+05/  2b/  32/  41/  54/  5f/  72/  83/  88/  b0/  b6/  c4/  d3/  ee/
+```
+执行```git gc```后.git/objects目录下显示如下
+```
+info/  pack/
+```
+
+
+## 子模块 submodule
+
+git仓库添加子模块
+```
+git submodule add https://github.com/ts-zhang/git-module.git
+git submodule status                        查看子模块状态
+git submodule foreach <git command>         所有子模块中执行命令
+git clone --recurse-submodules              克隆带子模块的仓库
+git submodule update --init --recursive     初始化带子模块仓库(git clone后)
+```
+
+> 在主仓库中pull拉取代码，不能拉取submodule中的修改，需要执行 ```git submodule foreach git pull```
