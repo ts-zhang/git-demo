@@ -235,3 +235,11 @@ git config --global alias.br branch
 git config --global alias.last 'log -1'
 git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 ```
+
+## 文件忽略
+
+某些工作区中的文件不想提交，比如log，或IDE的配置等．
+在Git工作区的根目录下创建一个特殊的.gitignore文件，然后把要忽略的文件名填进去，Git就会自动忽略这些文件．
+
+[gitignore](https://github.com/github/gitignore)
+
