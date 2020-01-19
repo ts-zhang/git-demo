@@ -250,7 +250,7 @@ int print_commit_info(git_commit *commit) {
  * @return
  */
 int commit_history() {
-    const char *repo_path = "C:\\Users\\admin\\CLionProjects\\repo\\git-demo";
+    const char *repo_path = "../repo/libgit2";
     git_libgit2_init();
     //open repo
     git_repository *repo = NULL;
