@@ -223,5 +223,79 @@ int lookup_commit() {
 }
 ```
 
+## 提交历史
+
+```c
+/**
+ * 打印提交详情
+ * @param commit
+ * @return
+ */
+int print_commit_info(git_commit *commit) {
+    printf("\n");
+    git_oid *commit_id = git_commit_id(commit);
+    git_signature *sig = git_commit_author(commit);
+    char *commit_message = git_commit_message(commit);
+
+    char id[41] = {0};
+    git_oid_fmt(id, commit_id);
+
+    printf("commit %s\nAuthor: %s <%s>\nDate:  %s\n\n", id, sig->name, sig->email, ctime(&sig->when.time));
+    printf(commit_message);
+}
+```
+```c
+/**
+ * 提交历史
+ * @return
+ */
+int commit_history() {
+    const char *repo_path = "C:\\Users\\admin\\CLionProjects\\repo\\git-demo";
+    git_libgit2_init();
+    //open repo
+    git_repository *repo = NULL;
+    int ret = git_repository_open(&repo, repo_path);
+    if (ret != 0) {
+        git_error *err = git_error_last();
+        printf("clone error: %s\n", err->message);
+        return ret;
+    }
+
+    //get last commit info
+    git_commit *commit;
+    git_oid oid_parent_commit;
+
+    ret = git_reference_name_to_id(&oid_parent_commit, repo, "HEAD");
+
+    if (ret != 0) {
+        git_error *err = git_error_last();
+        printf("name to id error: %s\n", err->message);
+        return ret;
+    }
+
+    ret = git_commit_lookup(&commit, repo, &oid_parent_commit);
+
+    ret = print_commit_info(commit);
+
+    //get commit history
+    do {
+        git_commit *nth_parent = NULL;
+        ret = git_commit_parent(&nth_parent, commit, 0);
+        if (ret != 0) {
+            git_error *err = git_error_last();
+            printf("error: %s\n", err->message);
+            break;
+        }
+        print_commit_info(nth_parent);
+        commit = nth_parent;
+        git_commit_free(nth_parent);
+    } while (ret == 0);
+
+    git_repository_free(repo);
+    git_libgit2_shutdown();
+    return ret;
+}
+```
+
 [commit相关函数](https://libgit2.org/libgit2/#HEAD/group/commit)
 
