@@ -299,3 +299,259 @@ int commit_history() {
 
 [commit相关函数](https://libgit2.org/libgit2/#HEAD/group/commit)
 
+## 显示commit中tree详情
+
+```c
+/**
+ * 打印提交详情
+ * @param commit
+ * @return
+ */
+int print_commit_info(git_commit *commit) {
+    printf("\n");
+    git_oid *commit_id = git_commit_id(commit);
+    git_signature *sig = git_commit_author(commit);
+    char *commit_message = git_commit_message(commit);
+
+    char cid[41] = {0};
+    git_oid_fmt(cid, commit_id);
+
+    printf("commit %s\nAuthor: %s <%s>\nDate:  %s\n\n", cid, sig->name, sig->email, ctime(&sig->when.time));
+    printf(commit_message);
+    printf("\n");
+
+    git_tree *tree = NULL;
+    int ret = git_commit_tree(&tree, commit);
+
+    size_t entry_count = git_tree_entrycount(tree);
+    for (int i = 0; i < entry_count; ++i) {
+        git_tree_entry *entry = git_tree_entry_byindex(tree, i);
+        const char *entry_name = git_tree_entry_name(entry);
+        git_object_t entry_type_enum = git_tree_entry_type(entry);
+        git_oid *entry_id = git_tree_entry_id(entry);
+        git_filemode_t entry_filemode = git_tree_entry_filemode_raw(entry);
+
+        char eid[41] = {0};
+        git_oid_fmt(eid, entry_id);
+
+        const char *entry_type_str = git_object_type2string(entry_type_enum);
+
+        //output: filemoode type sha1 filename
+        printf("%07o\t%s\t%s\t%s\n", (int)entry_filemode, entry_type_str, eid, entry_name);
+    }
+
+    printf("\n--------------------------------------------------------------------\n");
+}
+```
+
+输出格式如下：
+```
+0100644	blob	fd8430bc864cfcd5f10e5590f8a447e01b942bfe	.HEADER
+0100644	blob	34c5e9234ec18c69a16828dbc9633a95f0253fe9	.editorconfig
+0100644	blob	176a458f94e0ea5272ce67c36bf30b6be9caf623	.gitattributes
+0040000	tree	e8bfe5af39579a7e4898bb23f3a76a72c368cee6	.github
+0100644	blob	dec3dca06c8fdc1dd7d426bb148b7f99355eaaed	.gitignore
+```
+
+## 查看引用
+
+>```git show-ref```命令查看所有引用
+
+```c
+/**
+ * 打印引用详情
+ * @param repo 
+ * @param ref_name 
+ */
+void print_ref_info(const git_repository *repo, const char *ref_name) {
+    git_reference *ref = NULL;
+    git_reference_lookup(&ref, repo, ref_name);
+    git_reference_t ref_type = git_reference_type(ref);
+    //ref_oid即commit id
+    git_oid *ref_oid = git_reference_target(ref);
+
+    char rid[41] = {0};
+    git_oid_fmt(rid, ref_oid);
+
+    printf("ref name: %s    type: %d,    id: %s\n", ref_name, ref_type, rid);
+}
+```
+
+```c
+/**
+ * 引用列表
+ * @return
+ */
+int lookup_refs() {
+    const char *repo_path = "../repo/libgit2";
+    git_libgit2_init();
+    //open repo
+    git_repository *repo = NULL;
+    int ret = git_repository_open(&repo, repo_path);
+    if (ret != 0) {
+        git_error *err = git_error_last();
+        printf("clone error: %s\n", err->message);
+        return ret;
+    }
+
+    //list refs
+    git_strarray refs = {0};
+    ret = git_reference_list(&refs, repo);
+
+    for (int i = 0; i < refs.count; ++i) {
+        print_ref_info(repo, refs.strings[i]);
+    }
+
+    git_repository_free(repo);
+    git_libgit2_shutdown();
+    return ret;
+}
+```
+
+## tag列表
+
+```c
+/**
+ * 打印tag详情
+ */
+void print_tag_info(git_tag *tag) {
+    git_object_t tag_type = git_tag_target_type(tag);
+    const char *tag_name = git_tag_name(tag);
+    const git_signature *tagger = git_tag_tagger(tag);
+    const char *message = git_tag_message(tag);
+
+    printf("Name: %s\nType: %d\nTagger: %s\neMail: %s\nMessage: %s\n\n", tag_name, tag_type, tagger->name,
+           tagger->email, message);
+}
+```
+
+```c
+/**
+ * 遍历tag，只输出附注标签
+ * @param name
+ * @param tag_id
+ * @param payload
+ * @return
+ */
+int each_tag(const char *name, git_oid *tag_id, void *payload) {
+    git_repository *repo = (git_repository *) payload;
+    git_object *obj = NULL;
+    int ret = git_revparse_single(&obj, repo, name);
+
+    if (ret == 0) {
+        git_object_t type = git_object_type(obj);
+        const char *type_str = git_object_type2string(type);
+        switch (type) {
+            //附注标签
+            case GIT_OBJECT_TAG:
+                print_tag_info((git_tag *) obj);
+                break;
+            default:
+                printf("%s[%s]\n", name, type_str);
+                break;
+        }
+    } else {
+        git_error *err = git_error_last();
+        printf("error: %s, tag: %s\n", err->message, name);
+    }
+    return 0;
+}
+```
+
+```c
+/**
+ * tag列表
+ * @return
+ */
+int list_tags() {
+    const char *repo_path = "../repo/libgit2";
+    git_libgit2_init();
+    //open repo
+    git_repository *repo = NULL;
+    int ret = git_repository_open(&repo, repo_path);
+    if (ret != 0) {
+        git_error *err = git_error_last();
+        printf("clone error: %s\n", err->message);
+        return ret;
+    }
+
+    //list tags
+    git_strarray tags = {0};
+
+    git_tag_list(&tags, repo);
+    git_tag_foreach(repo, each_tag, repo);
+
+    for (int i = 0; i < tags.count; ++i) {
+//        printf("%s\n", tags.strings[i]);
+    }
+
+    git_repository_free(repo);
+    git_libgit2_shutdown();
+    return ret;
+}
+```
+
+## index文件读取
+
+> 命令```git ls-files --stage```可以读取index文件
+
+```c
+/**
+ * 打印index详情
+ * @param index
+ */
+void print_index_info(git_index *index) {
+    //file .git/index命令查看版本和entry数
+    unsigned int index_version = git_index_version(index);
+    unsigned int entry_count = git_index_entrycount(index);
+    printf("index: Git index, version %d, %d entries\n", index_version, entry_count);
+
+
+    //查看index中所有entry　git ls-files --stage
+    //命令输出：<mode> <object> <stage> <file>
+
+    git_index_iterator *iter = NULL;
+    int ret = git_index_iterator_new(&iter, index);
+
+    git_index_entry *entry = NULL;
+
+    int iter_ret = 0;
+    do {
+        iter_ret = git_index_iterator_next(&entry, iter);
+        if (iter_ret == GIT_ITEROVER) {
+            break;
+        }
+
+        char eid[41] = {0};
+
+        git_oid_fmt(eid, &entry->id);
+
+        int stage_number = git_index_entry_stage(entry);
+
+        printf("%06o  %s  %d  %s\n", entry->mode, eid, stage_number, entry->path);
+    } while (iter_ret == 0);
+
+    git_index_iterator_free(iter);
+}
+```
+
+```c
+/**
+ * 打开index
+ * @return
+ */
+int open_index() {
+    const char *index_path = "../repo/libgit2/.git/index";
+    git_libgit2_init();
+
+    git_index *index = NULL;
+    int ret = git_index_open(&index, index_path);
+
+    if (ret == 0) {
+        print_index_info(index);
+        git_index_free(index);
+    }
+
+    git_libgit2_shutdown();
+}
+```
