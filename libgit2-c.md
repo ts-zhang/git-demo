@@ -767,3 +767,39 @@ int find_config() {
     return ret;
 }
 ```
+
+## 修订版
+
+```c
+/**
+ * 修订版查看
+ * @return 
+ */
+int revision_walk() {
+    git_libgit2_init();
+    const char *repo_root_path = "../../repo/libgit2";
+    git_repository *repo;
+    int ret = git_repository_open(&repo, repo_root_path);
+    if (ret == 0) {
+        git_revwalk *walker;
+        ret = git_revwalk_new(&walker, repo);
+        git_revwalk_push_range(walker, "HEAD~20..HEAD");
+        git_oid oid;
+        while (git_revwalk_next(&oid, walker) == 0) {
+            char id[41] = {0};
+            git_oid_fmt(id, &oid);
+            git_commit *commit;
+            git_commit_lookup(&commit, repo, &oid);
+            const char *summary = git_commit_summary(commit);
+            printf("%s %s\n", id, summary);
+        }
+        git_revwalk_free(walker);
+    } else {
+        printf("can't found repo config file,");
+        git_error *error = git_error_last();
+        printf("%s\n", error->message);
+    }
+
+    git_libgit2_shutdown();
+}
+```
