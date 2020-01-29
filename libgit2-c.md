@@ -794,10 +794,6 @@ int revision_walk() {
             printf("%s %s\n", id, summary);
         }
         git_revwalk_free(walker);
-    } else {
-        printf("can't found repo config file,");
-        git_error *error = git_error_last();
-        printf("%s\n", error->message);
     }
 
     git_libgit2_shutdown();
