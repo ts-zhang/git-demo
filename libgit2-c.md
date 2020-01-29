@@ -799,3 +799,35 @@ int revision_walk() {
     git_libgit2_shutdown();
 }
 ```
+
+## 检出
+
+```c
+/**
+ * 代码检出
+ * @return
+ */
+int checkout() {
+    git_libgit2_init();
+    const char *repo_root_path = "../../repo/libgit2";
+    git_repository *repo;
+    int ret = git_repository_open(&repo, repo_root_path);
+    if (ret == 0) {
+        git_checkout_options opts;
+        git_checkout_options_init(&opts, GIT_CHECKOUT_OPTIONS_VERSION);
+
+	//强制检出
+        opts.checkout_strategy = GIT_CHECKOUT_FORCE;
+        opts.notify_cb = git_checkout_notify_callback;
+        opts.progress_cb = git_checkout_progress_callback;
+        char *paths[] = {"README.md"};
+        opts.paths.strings = paths;
+        opts.paths.count = 1;
+
+        ret = git_checkout_head(repo, &opts);
+    }
+    git_libgit2_shutdown();
+
+    return ret;
+}
+```
