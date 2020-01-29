@@ -626,3 +626,74 @@ int show_status() {
 }
 ```
 
+## 差异
+
+```c
+int git_diff_file_callback(const git_diff_delta *delta, float progress, void *payload) {
+    printf("diff %s %s\n", delta->old_file.path, delta->new_file.path);
+    return 0;
+}
+
+int git_diff_binary_callback(const git_diff_delta *delta, const git_diff_binary *binary, void *payload) {
+    printf("binary\n");
+    return 0;
+}
+
+int git_diff_hunk_callback(const git_diff_delta *delta, const git_diff_hunk *hunk, void *payload) {
+    if (hunk) {
+        printf("%s\n", hunk->header);
+    }
+    return 0;
+}
+
+int git_diff_line_callback(const git_diff_delta *delta, const git_diff_hunk *hunk, const git_diff_line *line,
+                           void *payload) {
+    if (line) {
+        printf("%s", line->content);
+    }
+    return 0;
+}
+```
+
+```c
+/**
+ * 
+ * @return 
+ */
+int diff() {
+    git_libgit2_init();
+    const char *repo_root_path = "../../repo/libgit2";
+    git_repository *repo;
+    int ret = git_repository_open(&repo, repo_root_path);
+    if (ret != 0) {
+        git_error *err = git_error_last();
+        printf("open repo error: %s\n", err->message);
+        return ret;
+    }
+
+    git_diff *diff;
+
+    ret = git_diff_index_to_workdir(&diff, repo, NULL, NULL);
+
+    git_diff_stats *stats;
+
+    ret = git_diff_get_stats(&stats, diff);
+
+    git_buf buf = {0};
+
+    ret = git_diff_stats_to_buf(&buf, stats, GIT_DIFF_STATS_FULL, 10);
+
+    printf(buf.ptr);
+
+    printf("\n");
+
+    git_buf_free(&buf);
+
+    ret = git_diff_foreach(diff, git_diff_file_callback, git_diff_binary_callback, git_diff_hunk_callback,
+                           git_diff_line_callback, NULL);
+
+    git_libgit2_shutdown();
+
+    return ret;
+}
+```
