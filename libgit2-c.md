@@ -831,3 +831,44 @@ int checkout() {
     return ret;
 }
 ```
+
+## 远程
+
+```c
+int git_indexer_progress_callback(const git_indexer_progress *stats, void *payload) {
+    printf("%d/%d/%d\n", stats->local_objects, stats->indexed_objects, stats->total_objects);
+}
+
+/**
+ * 查看远程仓库
+ * @return
+ */
+int list_remote() {
+    git_libgit2_init();
+    const char *repo_root_path = "../../repo/libgit2";
+    git_repository *repo;
+    int ret = git_repository_open(&repo, repo_root_path);
+    if (ret == 0) {
+        git_strarray remotes = {0};
+        ret = git_remote_list(&remotes, repo);
+        for (int i = 0; i < remotes.count; ++i) {
+            const char *remote_name = remotes.strings[i];
+            git_remote *remote = NULL;
+            ret = git_remote_lookup(&remote, repo, remote_name);
+            const char *name = git_remote_name(remote);
+            const char *url = git_remote_url(remote);
+            const char *pushurl = git_remote_pushurl(remote);
+            printf("%s %s %s\n", name, url, pushurl);
+
+            git_fetch_options opts = GIT_FETCH_OPTIONS_INIT;
+
+            opts.callbacks.transfer_progress = git_indexer_progress_callback;
+
+            ret = git_remote_fetch(remote, NULL, &opts, NULL);
+        }
+    }
+    git_libgit2_shutdown();
+
+    return ret;
+}
+```
