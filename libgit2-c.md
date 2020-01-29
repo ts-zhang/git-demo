@@ -555,3 +555,74 @@ int open_index() {
     git_libgit2_shutdown();
 }
 ```
+
+## 状态
+
+>git status查看当前仓库状态
+
+```c
+/**
+ * 状态枚举转换字符串
+ * @param status_flags 
+ * @return 
+ */
+char *status_2_str(unsigned int status_flags) {
+    if (status_flags == GIT_STATUS_CURRENT) {
+        return "CURRENT";
+    } else if (status_flags == GIT_STATUS_INDEX_NEW) {
+        return "INDEX_NEW";
+    } else if (status_flags == GIT_STATUS_INDEX_MODIFIED) {
+        return "INDEX_MODIFIED";
+    } else if (status_flags == GIT_STATUS_INDEX_DELETED) {
+        return "INDEX_DELETED";
+    } else if (status_flags == GIT_STATUS_INDEX_RENAMED) {
+        return "INDEX_RENAMED";
+    } else if (status_flags == GIT_STATUS_INDEX_TYPECHANGE) {
+        return "INDEX_TYPECHANGE";
+    } else if (status_flags == GIT_STATUS_WT_NEW) {
+        return "WT_NEW";
+    } else if (status_flags == GIT_STATUS_WT_MODIFIED) {
+        return "WT_MODIFIED";
+    } else if (status_flags == GIT_STATUS_WT_DELETED) {
+        return "WT_DELETED";
+    } else if (status_flags == GIT_STATUS_WT_TYPECHANGE) {
+        return "WT_TYPECHANGE";
+    } else if (status_flags == GIT_STATUS_WT_RENAMED) {
+        return "WT_RENAMED";
+    } else if (status_flags == GIT_STATUS_WT_UNREADABLE) {
+        return "WT_UNREADABLE";
+    } else if (status_flags == GIT_STATUS_IGNORED) {
+        return "IGNORED";
+    } else if (status_flags == GIT_STATUS_CONFLICTED) {
+        return "CONFLICTED";
+    } else {
+        return "UNKNOWN";
+    }
+}
+```
+
+```c
+int git_status_callback(const char *path, unsigned int status_flags, void *payload) {
+    printf("%s     [%s]\n", path, status_2_str(status_flags));
+    return 0;
+}
+
+int show_status() {
+    git_libgit2_init();
+    const char *repo_root_path = "../../repo/libgit2";
+    git_repository *repo;
+    int ret = git_repository_open(&repo, repo_root_path);
+    if (ret != 0) {
+        git_error *err = git_error_last();
+        printf("open repo error: %s\n", err->message);
+        return ret;
+    }
+
+    ret = git_status_foreach(repo, git_status_callback, NULL);
+
+    git_libgit2_shutdown();
+
+    return ret;
+}
+```
+
