@@ -697,3 +697,73 @@ int diff() {
     return ret;
 }
 ```
+
+## 配置
+
+```c
+
+int git_config_foreach_callback(const git_config_entry *entry, void *payload) {
+    printf("%s=%s\n", entry->name, entry->value);
+}
+
+int show_config(const char *config_name, git_config *config) {
+    printf("=========================%s config=========================\n", config_name);
+    return git_config_foreach(config, git_config_foreach_callback, NULL);
+}
+
+int show_config_by_path(const char *config_name, const char *config_path) {
+    git_config *config;
+    int ret = git_config_open_ondisk(&config, config_path);
+    if (ret == 0) {
+        ret = show_config(config_name, config);
+        git_config_free(config);
+    }
+    return ret;
+}
+
+/**
+ * 查看配置
+ * @return
+ */
+int find_config() {
+    git_buf global_config_path = {0};
+    git_buf system_config_path = {0};
+
+    git_libgit2_init();
+    int ret = git_config_find_global(&global_config_path);
+    if (ret == 0) {
+        printf("global config file path: %s\n", global_config_path.ptr);
+        show_config_by_path("global", global_config_path.ptr);
+    } else {
+        printf("can't found global config file,");
+        git_error *error = git_error_last();
+        printf("%s\n", error->message);
+    }
+
+    ret = git_config_find_system(&system_config_path);
+    if (ret == 0) {
+        printf("system config file path: %s\n", system_config_path.ptr);
+        show_config_by_path("system", system_config_path.ptr);
+    } else {
+        printf("can't found system config file,");
+        git_error *error = git_error_last();
+        printf("%s\n", error->message);
+    }
+
+    const char *repo_root_path = "../../repo/libgit2";
+    git_repository *repo;
+    ret = git_repository_open(&repo, repo_root_path);
+    if (ret == 0) {
+        git_config *config;
+        ret = git_repository_config(&config, repo);
+        show_config("repo", config);
+    } else {
+        printf("can't found repo config file,");
+        git_error *error = git_error_last();
+        printf("%s\n", error->message);
+    }
+
+    git_libgit2_shutdown();
+    return ret;
+}
+```
